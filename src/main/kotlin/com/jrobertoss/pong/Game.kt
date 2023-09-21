@@ -1,5 +1,6 @@
 package com.jrobertoss.pong
 
+import com.jrobertoss.pong.entities.AbstractGameEntity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -11,25 +12,21 @@ object Game : Runnable {
 
 
     init {
-      // TODO > initialize game state
+        GameState.initEntities()
     }
 
     @JvmStatic
-    fun main(args: Array<String>) {
-        Thread(Game).start()
-    }
-
+    fun main(args: Array<String>) = Thread(Game).start()
 
     /*
         TODO > invoke all game entities tick
      */
-    private fun tick() {
-
-    }
+    private fun tick() = GameState.gameEntityList.forEach(AbstractGameEntity::tick)
 
     override fun run() = runBlocking {
         while (isRunning) {
             tick()
+            GameCanvas.render(GameState.gameEntityList)
             delay(FRAME_DELAY_TIME)
         }
     }
