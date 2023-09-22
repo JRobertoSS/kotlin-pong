@@ -6,7 +6,7 @@ import kotlinx.coroutines.runBlocking
 
 object Game : Runnable {
 
-    private const val FRAME_DELAY_TIME = 1000L / 60
+    private const val FRAME_DELAY_TIME = 1000L / 120
 
     private var isRunning = true
 

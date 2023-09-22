@@ -10,19 +10,21 @@ import javax.swing.WindowConstants
 
 object GameCanvas : Canvas() {
 
-    const val gameWidth = 160
-    const val gameHeight = 120
-    const val gameScale = 3
+    const val GAME_WIDTH = 160
+    const val GAME_HEIGHT = 120
+    private const val GAME_SCALE = 3
+    const val SCALED_WIDTH = GAME_WIDTH * GAME_SCALE
+    const val SCALED_HEIGHT = GAME_HEIGHT * GAME_SCALE
 
-    val layer: BufferedImage
+
+    private val layer: BufferedImage = BufferedImage(GAME_WIDTH, GAME_HEIGHT, BufferedImage.TYPE_INT_RGB)
 
     init {
-        layer = BufferedImage(gameWidth, gameHeight, BufferedImage.TYPE_INT_RGB)
 
-        preferredSize = Dimension(gameWidth * gameScale, gameHeight * gameScale)
-        addKeyListener(GameKeyListener.instance)
+        preferredSize = Dimension(SCALED_WIDTH, SCALED_HEIGHT)
+        addKeyListener(GameKeyListener)
 
-        val frame = JFrame("Pong").apply {
+        JFrame("Pong").apply {
             this.isResizable = false
             this.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
             this.add(this@GameCanvas)
@@ -39,20 +41,21 @@ object GameCanvas : Canvas() {
             return
         }
 
-        val graphics = this.layer.graphics
-        graphics.color = Color.black
-        graphics.fillRect(0, 0, gameWidth, gameHeight)
+        this.layer.graphics.apply {
+            color = Color.black
+            fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
 
-        gameEntityList.forEach {
-            it.render(graphics)
+            gameEntityList.forEach {
+                it.render(this)
+            }
         }
 
         bufferStrategy.drawGraphics.drawImage(
             this.layer,
             0,
             0,
-            gameWidth * gameScale,
-            gameHeight * gameScale,
+            SCALED_WIDTH,
+            SCALED_HEIGHT,
             null
         )
 

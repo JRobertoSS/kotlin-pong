@@ -2,35 +2,33 @@ package com.jrobertoss.pong.entities
 
 import com.jrobertoss.pong.GameCanvas
 import com.jrobertoss.pong.GameState
+import com.jrobertoss.pong.PongHelper.getRandomDxDyPair
+import com.jrobertoss.pong.PongHelper.getRectangle
 import java.awt.Color
 import java.awt.Graphics
-import java.awt.Rectangle
-import java.util.*
-import kotlin.math.cos
-import kotlin.math.sin
 
 class Ball(
     x: Double,
     y: Double,
+    // direction of X axis
     private var dx: Double = 0.0,
+    // direction of Y axis
     private var dy: Double = 0.0,
-    private var speed: Double = 1.7,
-): AbstractGameEntity(x, y, 4, 4) {
+    private var speed: Double = 0.8,
+    private val speedModifier: Double = 0.1
+) : AbstractGameEntity(x, y, 4, 4) {
 
     // Used by reflection
-    constructor() : this(100.0,GameCanvas.gameHeight / 2 -1.0)
+    constructor() : this(100.0, GameCanvas.GAME_HEIGHT / 2 - 1.0)
 
     init {
-        val angle = Random().nextInt(120 - 45) + 45 + 1
-        dx = cos(Math.toRadians(angle.toDouble()))
-        dy = sin(Math.toRadians(angle.toDouble()))
+        setRandomDxDy()
     }
 
-
     override fun tick() {
-        executeWidthVerification()
+        checkHorizontalBoundaries()
 
-        if (executeHeightVerification()) return
+        if (checkVerticalBoundaries()) return
 
         executeCollisionVerification()
 
@@ -43,35 +41,38 @@ class Ball(
     }
 
     private fun executeCollisionVerification() {
-        val bounds = Rectangle(
-            (x + (dx * speed)).toInt(),
-            (y + (dy * speed)).toInt(), width, height
+
+        val bounds = getRectangle(
+            (x + (dx * speed)),
+            (y + (dy * speed)),
+            width, height
         )
 
-        val boundsPlayer = Rectangle(
-            GameState.player.x.toInt(),
-            GameState.player.y.toInt(), GameState.player.width, GameState.player.height
+        val boundsPlayer = getRectangle(
+            GameState.player.x,
+            GameState.player.y,
+            GameState.player.width,
+            GameState.player.height
         )
-        val boundsEnemy = Rectangle(
-            GameState.enemy.x.toInt(),
-            GameState.enemy.y.toInt(), GameState.enemy.width, GameState.enemy.height
+
+        val boundsEnemy = getRectangle(
+            GameState.enemy.x,
+            GameState.enemy.y,
+            GameState.enemy.width,
+            GameState.enemy.height
         )
 
         if (bounds.intersects(boundsPlayer)) {
-            val angle = Random().nextInt(120 - 45) + 45 + 1
-            dx = Math.cos(Math.toRadians(angle.toDouble()))
-            dy = Math.sin(Math.toRadians(angle.toDouble()))
-            if (dy > 0) dy *= -1.0
+            setRandomDxDy()
+            if (dy > 0) onAnyPlayerCollision()
         } else if (bounds.intersects(boundsEnemy)) {
-            val angle = Random().nextInt(120 - 45) + 45 + 1
-            dx = Math.cos(Math.toRadians(angle.toDouble()))
-            dy = Math.sin(Math.toRadians(angle.toDouble()))
-            if (dy < 0) dy *= -1.0
+            setRandomDxDy()
+            if (dy < 0) onAnyPlayerCollision()
         }
     }
 
-    private fun executeHeightVerification(): Boolean {
-        if (y >= GameCanvas.gameHeight) {
+    private fun checkVerticalBoundaries(): Boolean {
+        if (y >= GameCanvas.GAME_HEIGHT) {
             // Enemy score
             ScoreBoard.addEnemyScore()
             // Reposition everything
@@ -87,16 +88,40 @@ class Ball(
         return false
     }
 
-    private fun executeWidthVerification() {
-        if (x + (dx * speed) + width >= GameCanvas.gameWidth) {
-            dx *= -1.0
-        } else if (x + (dx * speed) < 0) {
-            dx *= -1.0
+    private fun checkHorizontalBoundaries() {
+        val futureX = x + (dx * speed)
+        if (futureX + width >= GameCanvas.GAME_WIDTH) {
+            reverseDx()
+        } else if (futureX < 0) {
+            reverseDx()
         }
     }
 
-    override fun render(graphics: Graphics) {
-        graphics.color = Color.yellow
-        graphics.fillRect(x.toInt(), y.toInt(), width, height)
+    private fun onAnyPlayerCollision() {
+        reverseDy()
+        increaseSpeed()
     }
+
+    private fun increaseSpeed() {
+        speed += speedModifier
+    }
+
+    private fun reverseDy() {
+        dy *= -1
+    }
+
+    private fun reverseDx() {
+        dx *= -1
+    }
+
+    private fun setRandomDxDy() = getRandomDxDyPair().apply {
+        dx = this.first
+        dy = this.second
+    }
+
+    override fun render(graphics: Graphics) = graphics.run {
+        color = Color.yellow
+        fillRect(x.toInt(), y.toInt(), width, height)
+    }
+
 }

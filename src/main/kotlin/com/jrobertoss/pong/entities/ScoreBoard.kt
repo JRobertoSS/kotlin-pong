@@ -2,29 +2,34 @@ package com.jrobertoss.pong.entities
 
 import com.jrobertoss.pong.GameCanvas
 import java.awt.Color
+import java.awt.Font
 import java.awt.Graphics
 
 object ScoreBoard : AbstractGameEntity() {
 
     private var playerScore = 0
     private var enemyScore = 0
-    private val xOffset = 10
-    private val yOffset = 20
+    private const val X_OFFSET = 10
+    private const val Y_OFFSET = 15
 
     fun addPlayerScore() = playerScore++
     fun addEnemyScore() = enemyScore++
 
-    override fun tick() {
+    override fun tick() {}
 
-    }
+    override fun render(graphics: Graphics) = graphics.run {
+        color = Color.white
+        drawString(
+            enemyScore.toString(),
+            X_OFFSET,
+            Y_OFFSET)
 
-    override fun render(graphics: Graphics) {
-        graphics.color = Color.white
-        graphics.drawString(enemyScore.toString(), xOffset, yOffset)
-        graphics.drawString(
+        drawString(
             playerScore.toString(),
-            GameCanvas.gameWidth - xOffset,
-            GameCanvas.gameHeight - yOffset
+            GameCanvas.GAME_WIDTH - X_OFFSET,
+            GameCanvas.GAME_HEIGHT - Y_OFFSET
         )
+
     }
+
 }
