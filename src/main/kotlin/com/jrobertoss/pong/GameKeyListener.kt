@@ -3,6 +3,11 @@ package com.jrobertoss.pong
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 
+/**
+ * Listener to the player inputs.
+ * Listen to ← and → inputs to set the
+ * [com.jrobertoss.pong.entities.Player.left] and [com.jrobertoss.pong.entities.Player.right] flags.
+ */
 object GameKeyListener : KeyListener {
 
     override fun keyTyped(e: KeyEvent?) {

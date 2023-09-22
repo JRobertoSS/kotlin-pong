@@ -5,6 +5,10 @@ import com.jrobertoss.pong.PongHelper.constraintHorizontalBoundaries
 import java.awt.Color
 import java.awt.Graphics
 
+/**
+ * The controlled player bar.
+ * Moves on horizontal axis accordingly to flags, that are set by [com.jrobertoss.pong.GameKeyListener]
+ */
 class Player(
     x: Double,
     y: Double

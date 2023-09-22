@@ -8,6 +8,11 @@ import java.awt.image.BufferedImage
 import javax.swing.JFrame
 import javax.swing.WindowConstants
 
+/**
+ * Main game screen, which creates the JFrame, accordingly to dimension
+ * properties ([GAME_WIDTH], [GAME_HEIGHT] and [GAME_SCALE]).
+ * Also invokes every [AbstractGameEntity.render] for every instance in [GameState.gameEntityList].
+ */
 object GameCanvas : Canvas() {
 
     const val GAME_WIDTH = 160
@@ -35,7 +40,7 @@ object GameCanvas : Canvas() {
 
     }
 
-    fun render(gameEntityList: List<AbstractGameEntity>) {
+    fun render() {
         val bufferStrategy = this.bufferStrategy ?: run {
             this.createBufferStrategy(3)
             return
@@ -45,7 +50,7 @@ object GameCanvas : Canvas() {
             color = Color.black
             fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
 
-            gameEntityList.forEach {
+            GameState.gameEntityList.forEach {
                 it.render(this)
             }
         }

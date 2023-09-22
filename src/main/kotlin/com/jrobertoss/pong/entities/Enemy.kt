@@ -5,6 +5,10 @@ import com.jrobertoss.pong.PongHelper.constraintHorizontalBoundaries
 import java.awt.Color
 import java.awt.Graphics
 
+/**
+ * The enemy player AI bar.
+ * Tries to chase the ball position, with a certain limitation of speed to make it beatable.
+ */
 class Enemy(
     x: Double,
     y: Double,

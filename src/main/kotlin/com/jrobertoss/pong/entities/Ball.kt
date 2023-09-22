@@ -2,11 +2,16 @@ package com.jrobertoss.pong.entities
 
 import com.jrobertoss.pong.GameCanvas
 import com.jrobertoss.pong.GameState
-import com.jrobertoss.pong.PongHelper.getRandomDxDyPair
+import com.jrobertoss.pong.PongHelper.getRandomRadianAnglePair
 import com.jrobertoss.pong.PongHelper.getRectangle
 import java.awt.Color
 import java.awt.Graphics
 
+/**
+ * The ball of the game.
+ * Moves in a random direction/angle, bouncing on horizontal boundaries or by hitting any player bar,
+ * then inverting its direction and new random angle
+ */
 class Ball(
     x: Double,
     y: Double,
@@ -72,12 +77,15 @@ class Ball(
     }
 
     private fun checkVerticalBoundaries(): Boolean {
+        // Has the ball passed through upper boundaries?
         if (y >= GameCanvas.GAME_HEIGHT) {
             // Enemy score
             ScoreBoard.addEnemyScore()
             // Reposition everything
             GameState.initEntities()
             return true
+
+        // Or else has the ball passed through lower boundaries?
         } else if (y < 0) {
             // Player score
             ScoreBoard.addPlayerScore()
@@ -114,7 +122,7 @@ class Ball(
         dx *= -1
     }
 
-    private fun setRandomDxDy() = getRandomDxDyPair().apply {
+    private fun setRandomDxDy() = getRandomRadianAnglePair().apply {
         dx = this.first
         dy = this.second
     }

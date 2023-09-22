@@ -9,6 +9,15 @@ import com.jrobertoss.pong.entities.ScoreBoard
 import org.reflections.Reflections
 import java.util.concurrent.CopyOnWriteArrayList
 
+/**
+ * Controls the state of all game entities.
+ * Initialize dynamically by reflection, creating an instance of every [AbstractGameEntity] and putting it into the [gameEntityList].
+ * [gameEntityList] is a [CopyOnWriteArrayList] to avoid [java.util.ConcurrentModificationException].
+ *
+ * @see Reflections
+ * @see CopyOnWriteArrayList
+ * @see java.util.ConcurrentModificationException
+ */
 object GameState {
     private val reflections = Reflections("com.jrobertoss.pong.entities")
     val gameEntityList = CopyOnWriteArrayList<AbstractGameEntity>()

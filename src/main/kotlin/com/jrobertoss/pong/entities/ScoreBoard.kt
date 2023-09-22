@@ -5,6 +5,11 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics
 
+/**
+ * Controls and renders the score on the UI.
+ * Score methods ([addPlayerScore] and [addEnemyScore]) are called by
+ * [Ball], accordingly to vertical boundaries check on [Ball.checkVerticalBoundaries]
+ */
 object ScoreBoard : AbstractGameEntity() {
 
     private var playerScore = 0
